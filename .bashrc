@@ -53,11 +53,9 @@ alias l='ls -CF'
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
+if [ -f ~/.bash_env ]; then
+    . ~/.bash_env
+fi
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
@@ -112,19 +110,21 @@ export SDKMAN_DIR="/home/eric/.sdkman"
 [[ -s "/home/eric/.sdkman/bin/sdkman-init.sh" ]] && source "/home/eric/.sdkman/bin/sdkman-init.sh"
 
 
-
 #prompt customization
+force_color_prompt=yes
 GREEN="\[$(tput setaf 2)\]"
 TEAL="\[$(tput setaf 6)\]"
+LIGHT="\[$(tput setaf 123)\]"
 RESET="\[$(tput sgr0)\]"
 PROMPT_DIR='\w'
 command_prompt_fn(){
     if [ "${#PWD}" -gt 60 ]
     then
-        PS1="${GREEN}\[\e]0;\u@\h:\W\a\]${debian_chroot:+($debian_chroot)}\u@\h:\${RESET}W${TEAL} ▷ " 
+        PS1="${GREEN}\[\e]0;\u@\h:\W\a\]${debian_chroot:+($debian_chroot)}\u@\h:\${RESET}W $(__git_ps1 '(%s)')${TEAL} ▷${LIGHT} " 
     else
-        PS1="${GREEN}\[\e]0;\u@\h:\w\a\]${debian_chroot:+($debian_chroot)}\u@\h:${RESET}\w ${TEAL}▷ "
+        PS1="${GREEN}\[\e]0;\u@\h:\w\a\]${debian_chroot:+($debian_chroot)}\u@\h:${RESET}\w $(__git_ps1 '(%s)')${TEAL} ▷${LIGHT} "
     fi
 }
 PROMPT_COMMAND='command_prompt_fn';
 export PS1
+
