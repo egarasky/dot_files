@@ -1,0 +1,27 @@
+[alias]
+    co = checkout
+    df = diff
+    dfc = diff --cached
+    st = status
+    mff = merge --ff-only
+
+    # Force delete all branches except current and master (Dangerous)
+    nuke = "!for branch in $(git branch | grep -v ^* | grep -v ' master$'); do git branch -D $branch; done"
+
+    # Delete any branches that have been merged into master
+    cleanup-branches = "!git co master && git branch --no-color --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+    cleanup-2 = "!git branch -d $(git branch --merged=master | grep -v master) git fetch --prune"
+
+    # Helper to get current branch name
+    branch-name = "!git rev-parse --abbrev-ref HEAD"
+
+    # Push current branch to remote origin and set it to track the upstream branch
+    publish = "!git push -u origin $(git branch-name)"
+
+    # Checkout pull request even if fork, as branch 'PR-[#]' and switch to it
+    # https://stackoverflow.com/questions/3321492/git-alias-with-positional-parameters
+    copr = !sh -c 'git fetch origin pull/$1/head:pr/$1 && git co pr/$1' -
+
+    branch-commit-diff = "!git cherry -v $1 $(git branch-name)"
+
+    commit-files = "!git show --pretty=\"\" --name-only $1"
